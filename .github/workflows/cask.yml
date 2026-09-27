@@ -1,0 +1,101 @@
+# Write an app's released version and digest into its cask.
+#
+# THE TRIGGER IS A TAG ON THIS REPO NAMED <cask>-v<version>. Release the
+# app, then tag this repo to match:
+#
+#     git tag md-too-v260927.2152 && git push origin md-too-v260927.2152
+#     git tag chatokf-v26.09.26   && git push origin chatokf-v26.09.26
+#
+# A tag needs no token from the app's repository: the workflow runs here,
+# reads a public release through the API, and commits with the token
+# Actions already provides. It refuses to write if the tag and the app's
+# latest release disagree, so a cask cannot name one release and describe
+# another. The digest is READ from the .sha256 the release published,
+# never computed here.
+
+name: cask
+
+on:
+  push:
+    tags: ['md-too-v*', 'chatokf-v*']
+  workflow_dispatch:
+    inputs:
+      cask:
+        description: which cask to point at its app's latest release
+        required: true
+        type: choice
+        options: [md-too, chatokf]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cask
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Point the cask at its app's latest release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PICKED: ${{ inputs.cask }}
+        run: |
+          set -o pipefail
+          if [ "${GITHUB_REF_TYPE:-}" = "tag" ]; then
+            cask="${GITHUB_REF_NAME%%-v*}"
+            want="${GITHUB_REF_NAME#*-v}"
+          else
+            cask="$PICKED"
+            want=""
+          fi
+          case "$cask" in
+            md-too)  repo=leok7v/md.too;   asset=md.too.dmg ;;
+            chatokf) repo=leok7v/ChatOKF;  asset=ChatOKF.dmg ;;
+            *) echo "FAIL: no cask named $cask"; exit 1 ;;
+          esac
+
+          rel=$(gh api "repos/$repo/releases/latest")
+          tag=$(printf '%s' "$rel" | jq -r .tag_name)
+          version=${tag#v}
+          if [ -n "$want" ] && [ "$want" != "$version" ]; then
+            echo "FAIL: tagged $GITHUB_REF_NAME but $repo's latest"
+            echo "      release is $tag. Release the app first."
+            exit 1
+          fi
+
+          url=$(printf '%s' "$rel" |
+                jq -r --arg a "$asset.sha256" \
+                  '.assets[] | select(.name==$a) | .browser_download_url')
+          if [ -z "$url" ] || [ "$url" = "null" ]; then
+            echo "FAIL: release $tag publishes no $asset.sha256"
+            exit 1
+          fi
+          sha=$(curl -sfL "$url" | cut -d' ' -f1)
+          case "$sha" in
+            [0-9a-f]*) : ;;
+            *) echo "FAIL: no digest at $url"; exit 1 ;;
+          esac
+          echo "$cask $tag, digest $sha"
+
+          file="Casks/$cask.rb"
+          sed -i "s/^  version \".*\"$/  version \"$version\"/" "$file"
+          sed -i "s/^  sha256 \".*\"$/  sha256 \"$sha\"/" "$file"
+          ruby -c "$file"
+
+          if git diff --quiet "$file"; then
+            echo "$file already names $version and that digest"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email \
+              "41898282+github-actions[bot]@users.noreply.github.com"
+            git add "$file"
+            git commit -m "$cask: $tag"
+            git push origin main
+          fi
