@@ -3,8 +3,8 @@
 # .github/workflows/cask.yml; do not edit them by hand.
 
 cask "md-too" do
-  version "260928.0347"
-  sha256 "0193ce724cdb68b9811104b0940d26a96bd34a92b7a4f1bbe77f28b760bdc5d2"
+  version "260928.0708"
+  sha256 "7321962fec6b14f6057d4a36ab87bfb2a78c196c7f382bfbd75b6d17b17ced71"
 
   url "https://github.com/leok7v/md.too/releases/download/v#{version}/md.too.dmg"
   name "md.too"
