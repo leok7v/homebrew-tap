@@ -13,7 +13,7 @@ for it by name if you skip it.
 
 | Cask | App | Needs |
 |---|---|---|
-| `md-too` | [md.too](https://leok7v.github.io/md.too/) | macOS 13 or newer, Apple Silicon or Intel |
+| `md-too` | [md.too](https://leok7v.github.io/md.too/) | macOS 14 or newer, Apple Silicon or Intel |
 | `chatokf` | [ChatOKF](https://leok7v.github.io/ChatOKF/) | macOS 15 or newer, Apple Silicon |
 
 Every app here is signed with a Developer ID certificate, notarized and
