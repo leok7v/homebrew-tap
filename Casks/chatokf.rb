@@ -3,8 +3,8 @@
 # .github/workflows/cask.yml; do not edit them by hand.
 
 cask "chatokf" do
-  version "26.09.25"
-  sha256 "3209b0b674aea6d3c5c84fa58290aee42105653da9198717c102b154045d0235"
+  version "26.09.28"
+  sha256 "28261af84a9875853c6a2c81ee8be88041042fe5584b7de6d04c2457d6b02f08"
 
   url "https://github.com/leok7v/ChatOKF/releases/download/v#{version}/ChatOKF.dmg"
   name "ChatOKF"
