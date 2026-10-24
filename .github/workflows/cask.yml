@@ -5,6 +5,7 @@
 #
 #     git tag md-too-v260927.2152 && git push origin md-too-v260927.2152
 #     git tag chatokf-v26.09.26   && git push origin chatokf-v26.09.26
+#     git tag kataphasis-v261024.0753 && git push origin kataphasis-v261024.0753
 #
 # A tag needs no token from the app's repository: the workflow runs here,
 # reads a public release through the API, and commits with the token
@@ -17,14 +18,14 @@ name: cask
 
 on:
   push:
-    tags: ['md-too-v*', 'chatokf-v*']
+    tags: ['md-too-v*', 'chatokf-v*', 'kataphasis-v*']
   workflow_dispatch:
     inputs:
       cask:
         description: which cask to point at its app's latest release
         required: true
         type: choice
-        options: [md-too, chatokf]
+        options: [md-too, chatokf, kataphasis]
 
 permissions:
   contents: write
@@ -58,6 +59,7 @@ jobs:
           case "$cask" in
             md-too)  repo=leok7v/md.too;   asset=md.too.dmg ;;
             chatokf) repo=leok7v/ChatOKF;  asset=ChatOKF.dmg ;;
+            kataphasis) repo=leok7v/kataphasis; asset=Kataphasis.dmg ;;
             *) echo "FAIL: no cask named $cask"; exit 1 ;;
           esac
 
