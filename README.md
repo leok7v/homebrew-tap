@@ -8,6 +8,7 @@ Homebrew casks for the macOS apps published at
     brew install --cask md-too      # the Markdown viewer
     brew install --cask chatokf     # the private AI chat
     brew install --cask kataphasis  # the text-only web search
+    brew install --cask caffeinate  # keeps the Mac awake
 
 The middle line is Homebrew's gate on taps that are not its own; it asks
 for it by name if you skip it.
@@ -17,6 +18,7 @@ for it by name if you skip it.
 | `md-too` | [md.too](https://leok7v.github.io/md.too/) | macOS 14 or newer, Apple Silicon or Intel |
 | `chatokf` | [ChatOKF](https://leok7v.github.io/ChatOKF/) | macOS 15 or newer, Apple Silicon |
 | `kataphasis` | [Kataphasis](https://github.com/leok7v/kataphasis) | macOS 14 or newer, Apple Silicon or Intel |
+| `caffeinate` | [Caffeinate](https://github.com/leok7v/Caffeinate) | macOS 13 or newer, Apple Silicon or Intel |
 
 Every app here is signed with a Developer ID certificate, notarized and
 stapled, so Gatekeeper accepts it even though Homebrew quarantines cask
