@@ -3,8 +3,8 @@
 # .github/workflows/cask.yml; do not edit them by hand.
 
 cask "caffeinate" do
-  version "000000.0000"
-  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+  version "261118.1618"
+  sha256 "70ec52033b22fcaa46a7e676706db6604d7b87cc3902a7c28a8f3b60e9c28d1d"
 
   url "https://github.com/leok7v/Caffeinate/releases/download/v#{version}/Caffeinate.dmg"
   name "Caffeinate"
